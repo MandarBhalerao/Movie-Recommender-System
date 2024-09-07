@@ -35,13 +35,13 @@ def recommend(movie):
     return recommended_movies, recommended_movies_posters
 
 
-movies_dict = pickle.load(open('movie_dict.pkl', 'rb'))
+movies_dict = pickle.load(open('new_movie_dict.pkl', 'rb'))
 # rb means read binary mode
 
 movies = pd.DataFrame(movies_dict)
 # converting the dictionary to dataframe
 
-similarity = pickle.load(open('similarity.pkl', 'rb'))
+similarity = pickle.load(open('new_similarity.pkl', 'rb'))
 
 # for title
 st.title('Movie Recommender System')

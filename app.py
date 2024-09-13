@@ -2,8 +2,29 @@ import streamlit as st
 import pickle
 import pandas as pd
 import requests
+
+@st.cache_data
+def download_and_load_pickle(url):
+    """
+    Download a pickle file from a direct Google Drive link and load it into memory.
     
-# Function to download and load data from a Google Drive link
+    Args:
+    url (str): Direct download URL for the Google Drive file.
+    
+    Returns:
+    object: The object loaded from the pickle file.
+    """
+    # Send a GET request to the URL
+    response = requests.get(url, stream=True)
+    if response.status_code == 200:
+        # Load the content of the file into a Python object
+        return pickle.loads(response.content)
+    else:
+        print("Failed to download the file.")
+        return None
+
+
+# Function to download and load data (parquet file) from a Google Drive link
 @st.cache_data  # Cache the function output to avoid re-downloading
 def load_data(url):
     """
@@ -57,7 +78,15 @@ def recommend(movie):
     return recommended_movies, recommended_movies_posters
 
 
-movies_dict = pickle.load(open('new_movie_dict.pkl', 'rb'))
+# Construct the direct download URL using the file ID from Google Drive
+file_id = "1tRu4UXhsFR5noyT8wpvKitQnEZsDkIjA"
+direct_url = f"https://drive.google.com/uc?export=download&id={file_id}"
+
+# Download and load the data using the above function
+movies_dict = download_and_load_pickle(direct_url)
+
+
+# movies_dict = pickle.load(open('new_movie_dict.pkl', 'rb'))
 # rb means read binary mode
 
 movies = pd.DataFrame(movies_dict)

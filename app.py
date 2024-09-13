@@ -2,7 +2,29 @@ import streamlit as st
 import pickle
 import pandas as pd
 import requests
-
+    
+# Function to download and load data from a Google Drive link
+@st.cache_data  # Cache the function output to avoid re-downloading
+def load_data(url):
+    """
+    Load data from a direct Google Drive download link.
+    
+    Args:
+    url (str): Direct download URL for the Google Drive file.
+    
+    Returns:
+    DataFrame or None: Loaded data as a pandas DataFrame, or None if an error occurs.
+    """
+    r = requests.get(url, allow_redirects=True)
+    if r.status_code == 200:
+        # Write the content to a .parquet file
+        with open('new_similarity.parquet', 'wb') as f:
+            f.write(r.content)
+        # Load the .parquet file into a DataFrame
+        return pd.read_parquet('new_similarity.parquet')
+    else:
+        print("Failed to download the file.")
+        return None
 
 def fetch_poster(movie_id):
     url = "https://api.themoviedb.org/3/movie/{}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US".format(
@@ -41,8 +63,18 @@ movies_dict = pickle.load(open('new_movie_dict.pkl', 'rb'))
 movies = pd.DataFrame(movies_dict)
 # converting the dictionary to dataframe
 
+
+# Construct the direct download URL using the file ID from Google Drive
+file_id = "1qHP8bzIiYve-z9KdFf43L-_zQ6UUWeJ-"
+direct_url = f"https://drive.google.com/uc?export=download&id={file_id}"
+
+# Load the data using the above function
+similarity = load_data(direct_url)
+
+# similarity = load_similarity('new_similarity.parquet')
+
 # similarity = pickle.load(open('new_similarity.pkl', 'rb'))
-similarity = pd.read_parquet('new_similarity.parquet')
+# similarity = pd.read_parquet('new_similarity.parquet')
 
 # for title
 # st.title('Movie Recommender System')

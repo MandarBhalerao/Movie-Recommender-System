@@ -48,7 +48,3 @@ You can access the live version of the Movie Recommendation System [here](https:
 - Expand the dataset to include more movies.
 - Incorporate user feedback to enhance recommendation accuracy.
 - Add filtering options based on genres, ratings, and release year.
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
